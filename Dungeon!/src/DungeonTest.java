@@ -36,6 +36,9 @@ public class DungeonTest {
     public int loot1 = 0;
 
 
+    public int[] player1LootList = new int[100];
+    public int player1LootAmount = 0;
+
     public static void main(String[] args) {
         new DungeonTest();
     }
@@ -63,7 +66,7 @@ public class DungeonTest {
         forestMonsters[3] = "Goblin";
 
         //numbers mean cleric, fighter, rogue, wizard, fireball, lightning bolt fight strength
-        //all are minus four so I can get 13s
+        //all are minus four so I can get 12s and 2s
 
         forestAttackStrengths[0] = 213300;
         forestAttackStrengths[1] = 431201;
@@ -118,7 +121,7 @@ public class DungeonTest {
         mapBase.add(mapStacks);
 
         JLabel player1Loot = new JLabel("");
-        player1Loot.setBounds(495,5,100,85);
+        player1Loot.setBounds(495,5,100,200);
         player1Loot.setLayout(null);
         player1Loot.setVisible(true);
         Border scoreBoardBorder = BorderFactory.createLineBorder(Color.BLACK, 3);
@@ -147,6 +150,12 @@ public class DungeonTest {
         playerOneLOOTDISPLAY.setLayout(null);
         playerOneLOOTDISPLAY.setVisible(true);
 
+        //JLabel p1loot1 = new JLabel(lootDropCorrespondanceForest[player1LootList[0]]);
+        //p1loot1.setBounds(5,80,80,20);
+        //p1loot1.setBorder(winsDisplay);
+        //player1Loot.add(p1loot1);
+        //p1loot1.setVisible(true);
+
         //set names to null so that they can be used
         BufferedImage village = null;
         BufferedImage road = null;
@@ -159,10 +168,10 @@ public class DungeonTest {
             //oh yeah, also set the name to null beforehand.
         try
         {
-            village = ImageIO.read(new File("/Users/graham/IdeaProjects/Dungeon!/src/Village.jpeg"));
-            road = ImageIO.read(new File("/Users/graham/IdeaProjects/Dungeon!/src/Road.png"));
-            hero = ImageIO.read(new File("/Users/graham/IdeaProjects/Dungeon!/src/hero.jpg"));
-            forest = ImageIO.read(new File("/Users/graham/IdeaProjects/Dungeon!/src/Forest.png"));
+            village = ImageIO.read(new File("C:\\Users\\gmcfarland8678\\IdeaProjects\\Dungeon-\\Dungeon!\\src\\Village.jpeg"));
+            road = ImageIO.read(new File("C:\\Users\\gmcfarland8678\\IdeaProjects\\Dungeon-\\Dungeon!\\src\\Road.png"));
+            hero = ImageIO.read(new File("C:\\Users\\gmcfarland8678\\IdeaProjects\\Dungeon-\\Dungeon!\\src\\hero.jpg"));
+            forest = ImageIO.read(new File("C:\\Users\\gmcfarland8678\\IdeaProjects\\Dungeon-\\Dungeon!\\src\\Forest.png"));
 
 
         }
@@ -266,6 +275,8 @@ public class DungeonTest {
             mapStacks.moveToFront(heroPlace);
             playerOneLOOTDISPLAY.setText(" " + loot1 + " gp");
             //heroPlace.setLayer('1');
+            //p1loot1.setText(lootDropCorrespondanceForest[player1LootList[0]]);
+
         }
 
 
@@ -286,7 +297,7 @@ public class DungeonTest {
             newX = newX - 53;
             newX = newX * 55;
             newX = newX + 210;
-            System.out.println(newX);
+            //System.out.println(newX);
             if (heroX + 55 == newX || heroX - 55 == newX || heroX == newX) {
                 movingWorks++;
             }
@@ -296,7 +307,7 @@ public class DungeonTest {
             newY = newY - 53;
             newY = newY * 55;
             newY= newY + 200;
-            System.out.println(newY);
+            //System.out.println(newY);
             if (heroY + 55 == newY || heroY - 55 == newY || heroY == newY) {
                 movingWorks++;
             }
@@ -345,6 +356,10 @@ public class DungeonTest {
 
     public void battle(char locationType) {
 
+        for (int i = 0; i < 5; i++) {
+            System.out.println(lootDropCorrespondanceForest[player1LootList[i]]);
+        }
+        System.out.println();
 
         if (locationType == 'f') {
             int forestMonster = rand.nextInt(4);
@@ -362,10 +377,12 @@ public class DungeonTest {
             char attackConverter = attackConverterSTAGEONE.charAt(playerClassNum);
             attackStrength = attackConverter - '0';
             //adds in four so that I can get 13, ie impossible difficulty, in one char.
-            attackStrength = attackStrength + 4;
+            attackStrength = attackStrength + 3;
             //rolls 2d6 and compares it to your attack strength vs. the monsters. From there, either you win and it rolls
             //to check for loot, or you lose and you roll to lose loot.
             int result = roll2d6();
+
+            System.out.println(attackStrength);
 
             //if you win, it gives you a Victory! popup and rolls on the loot table
             if (result > attackStrength) {
@@ -376,15 +393,19 @@ public class DungeonTest {
                 );
 
                 int reward = forestLootDrops[rand.nextInt(10)];
+                player1LootList[player1LootAmount] = reward;
 
                 //loot drop correspondance is a table that has a name based on GP worth count
                 JOptionPane.showMessageDialog(null,
-                        "You find a " + lootDropCorrespondanceForest[reward] + " worth " + reward + " gold pieces!",
+                        "You find a " + lootDropCorrespondanceForest[player1LootList[player1LootAmount]] + " worth " + reward + " gold pieces!",
                         "Loot",
                         JOptionPane.INFORMATION_MESSAGE
                 );
 
                 loot1 = loot1 + reward;
+
+                player1LootAmount++;
+
 
             }
             //if you fail to fight, it gives you a Defeat! message and rolls on the damage table
@@ -416,11 +437,17 @@ public class DungeonTest {
         //While I know the damage table does not accurately represent that from the game, unless you want to make a backlog
         //of loot, (Which you could) it isn't going to really capture the losing random crap dynamic from the game.
 
-        //On a similiar note, some of these have features yet unimplemented due to needing multiplayer to function.
+        //On a related note, some of these have features yet unimplemented due to needing multiplayer to function.
 
         String hitTitle = "There has been a horrible mistake.";
         String hitDialogue = "There has been a horrible mistake.";
-        int losses = 0;
+        //int losses = 0;
+
+        int lootDropped = 0;
+        lootDropped = rand.nextInt(player1LootAmount) + 1;
+        lootDropped--;
+
+
 
         if (roll < 6) {
             hitTitle = "Miss!";
@@ -429,30 +456,34 @@ public class DungeonTest {
 
         if (roll > 5 && roll < 8) {
             hitTitle = "Stunned!";
-            hitDialogue = "Drop some of your treasure.";
-            losses = rand.nextInt(loot1 - 10);
+            hitDialogue = "You drop your " + lootDropCorrespondanceForest[player1LootList[lootDropped]] + "!";
+            removeItem(lootDropped);
         }
 
         if (roll > 7 && roll < 11) {
             hitTitle = "Wounded!";
             hitDialogue = "Drop some treasure, be pushed back a square, and lose your next turn.";
-            losses = rand.nextInt(loot1 - 5);
+            //losses = rand.nextInt(loot1 - 5);
+            hitDialogue = "You drop your " + lootDropCorrespondanceForest[player1LootList[lootDropped]] + "!";
+            removeItem(lootDropped);
         }
 
         if (roll > 10 && roll < 12) {
             hitTitle = "Seriously Wounded!";
             hitDialogue = "Drop a lot of your treasure and move back to the village.";
-            losses = rand.nextInt(loot1);
-            heroX = 200;
-            heroY = 200;
+            //losses = rand.nextInt(loot1);
+            hitDialogue = "You drop your " + lootDropCorrespondanceForest[player1LootList[lootDropped]] + "!";
+            removeItem(lootDropped);
+            //heroX = 200;
+            //heroY = 200;
         }
 
         if (roll == 12) {
             hitTitle = "Killed!";
             hitDialogue = "You are dead. Drop all your treasure, return to the village, and choose a new character.";
             loot1 = 0;
-            heroX = 200;
-            heroY = 200;
+           // heroX = 200;
+            //heroY = 200;
         }
 
         //little popup with the text based on die roll to tell you what just happened
@@ -462,11 +493,30 @@ public class DungeonTest {
                 JOptionPane.ERROR_MESSAGE
         );
 
-        loot1 = loot1 - losses;
-        if (loot1 < 0) {
-            loot1 = 0;
+        //loot1 = loot1 - losses;
+        //if (loot1 < 0) {
+        //    loot1 = 0;
+        //}
+
+    }
+
+    public void removeItem(int lootDropped) {
+        loot1 = loot1 - player1LootList[lootDropped];
+        //this slides down the item above the deleted one on the list into the space that
+        //is now empty
+
+        player1LootList[lootDropped] = player1LootList[lootDropped + 1];
+
+        int i = 1;
+
+        for (i = 1; player1LootList[ + i] != 0; i++) {
+            player1LootList[lootDropped + i] = player1LootList[lootDropped + i + 1];
+
         }
 
+        player1LootAmount--;
+
+        //player1LootList[lootDropped + 2] = 0;
     }
 
 
